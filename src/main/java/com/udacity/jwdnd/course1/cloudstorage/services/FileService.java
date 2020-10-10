@@ -41,7 +41,7 @@ public class FileService {
             storageFile.setFiledata(file.getBytes());
             fileMapper.insert(storageFile);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error during saving file to db", e);
         }
     }
 }
