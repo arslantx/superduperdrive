@@ -19,6 +19,10 @@ public class FileService {
         this.fileMapper = fileMapper;
     }
 
+    public void deleteFile(Integer fileId) {
+        fileMapper.deleteFile(fileId);
+    }
+
     public File getFile(Integer fileId) {
         return fileMapper.getFile(fileId);
     }
