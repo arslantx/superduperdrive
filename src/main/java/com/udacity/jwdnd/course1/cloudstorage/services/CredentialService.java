@@ -1,9 +1,9 @@
 package com.udacity.jwdnd.course1.cloudstorage.services;
 
 import java.util.List;
-import java.util.UUID;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.CredentialMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
+import com.udacity.jwdnd.course1.cloudstorage.util.EncoderUtil;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,9 +25,9 @@ public class CredentialService {
     }
 
     public void createOrEditCredential(Credential credential) {
-        String newRandomKey = UUID.randomUUID().toString().replace("-", "");
-        credential.setKey(newRandomKey);
-        String encryptedPwd = encryptionService.encryptValue(credential.getPassword(), newRandomKey);
+        String encodedKey = EncoderUtil.getRandomEncodedStr();
+        credential.setKey(encodedKey);
+        String encryptedPwd = encryptionService.encryptValue(credential.getPassword(), encodedKey);
         credential.setPassword(encryptedPwd);
         // credentialid is null for new credentials
         if (credential.getCredentialid() == null) {
