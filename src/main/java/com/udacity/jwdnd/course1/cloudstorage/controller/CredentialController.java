@@ -1,8 +1,8 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
-import com.udacity.jwdnd.course1.cloudstorage.model.Note;
+import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
-import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
+import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -15,29 +15,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/note")
-public class NoteController {
-
-    private NoteService noteService;
+@RequestMapping("/credential")
+public class CredentialController {
+    
+    private CredentialService credentialService;
     private UserService userService;
 
-    public NoteController(NoteService noteService, UserService userService) {
-        this.noteService = noteService;
+    public CredentialController(CredentialService credentialService, UserService userService) {
+        this.credentialService = credentialService;
         this.userService = userService;
     }
-    
+
     @PostMapping
-    public ModelAndView createOrEditNote(Authentication authentication, Model model, @ModelAttribute Note note) {
+    public ModelAndView createOrEditCredential(Authentication authentication, Model model, @ModelAttribute Credential credential) {
         String currentUsername = authentication.getName();
         User user = userService.getUser(currentUsername);
-        note.setUserid(user.getUserid());
-        noteService.createOrEditNote(note);
+        credential.setUserid(user.getUserid());
+        credentialService.createOrEditCredential(credential);
         return new ModelAndView("redirect:/home");
     }
 
-    @DeleteMapping("/{noteid}")
-    public ModelAndView deleteFile(@PathVariable Integer noteid) {
-        noteService.deleteNote(noteid);
+    @DeleteMapping("/{credentialid}")
+    public ModelAndView deleteCredential(@PathVariable Integer credentialid) {
+        credentialService.deleteCredential(credentialid);
         return new ModelAndView("redirect:/home");
     }
 }

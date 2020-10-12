@@ -14,28 +14,20 @@ public class NoteService {
         this.noteMapper = noteMapper;
     }
 
-    public Note getNote(Integer noteid) {
-        return noteMapper.getNote(noteid);
-    }
-
     public List<Note> getAllNotes(Integer userid) {
         return noteMapper.getAllNotes(userid);
     }
 
     public void createOrEditNote(Note note) {
-        if (isExistingNote(note)) {
-            noteMapper.update(note);
-        } else {
+        // noteid is null for new notes
+        if (note.getNoteid() == null) {
             noteMapper.insert(note);
+        } else {
+            noteMapper.update(note);
         }
     }
 
     public void deleteNote(Integer noteid) {
         noteMapper.delete(noteid);
-    }
-
-    private boolean isExistingNote(Note note) {
-        Note existingNote = noteMapper.getNote(note.getNoteid());
-        return existingNote != null;
     }
 }

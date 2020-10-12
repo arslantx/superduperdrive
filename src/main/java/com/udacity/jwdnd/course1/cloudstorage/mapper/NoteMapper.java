@@ -12,9 +12,6 @@ import org.apache.ibatis.annotations.Update;
 @Mapper
 public interface NoteMapper {
 
-    @Select("SELECT * FROM NOTES WHERE noteid = #{noteid}")
-    Note getNote(Integer noteid);
-
     @Select("SELECT * FROM NOTES WHERE userid = #{userid}")
     List<Note> getAllNotes(Integer userid);
 
@@ -29,5 +26,4 @@ public interface NoteMapper {
 
     @Delete("DELETE FROM NOTES WHERE noteid = #{noteid}")
     Integer delete(Integer noteid);
-
 }
