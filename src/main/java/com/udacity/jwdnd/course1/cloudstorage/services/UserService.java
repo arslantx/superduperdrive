@@ -4,6 +4,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,11 +17,7 @@ public class UserService {
         this.userMapper = userMapper;
         this.hashService = hashService;
     }
-
-    public boolean isUsernameAvailable(String username) {
-        return userMapper.getUser(username) == null;
-    }
-
+    
     public int createUser(User user) {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
@@ -31,8 +28,18 @@ public class UserService {
         user.setPassword(hashedPassword);
         return userMapper.insert(user);
     }
-
+    
+    public Integer getCurrentUserId(Authentication auth) {
+        String username = auth.getName();
+        User user = getUser(username);
+        return user.getUserid();
+    }
+    
     public User getUser(String username) {
         return userMapper.getUser(username);
+    }
+
+    public boolean isUsernameAvailable(String username) {
+        return userMapper.getUser(username) == null;
     }
 }

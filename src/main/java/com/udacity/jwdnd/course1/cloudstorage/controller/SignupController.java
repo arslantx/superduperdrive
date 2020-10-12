@@ -30,7 +30,7 @@ public class SignupController {
     public String signupUser(@ModelAttribute User user, Model model) {
         String signupError = null;
         if (!userService.isUsernameAvailable(user.getUsername())) {
-            signupError = "User is already taken";
+            signupError = "Username is already taken";
         }
         if (signupError == null) {
             int rowsAdded = userService.createUser(user);

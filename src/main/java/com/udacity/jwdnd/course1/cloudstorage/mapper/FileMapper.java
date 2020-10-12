@@ -12,8 +12,8 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface FileMapper {
 
-    @Select("SELECT * FROM FILES WHERE fileId = #{fileId}")
-    File getFile(Integer fileId);
+    @Select("SELECT * FROM FILES WHERE fileId = #{fileId} AND userid = #{userid}")
+    File getFile(Integer fileId, Integer userid);
 
     @Select("SELECT fileId, filename FROM FILES WHERE userid = #{userid}")
     @MapKey("fileId")
@@ -24,6 +24,6 @@ public interface FileMapper {
     @Options(useGeneratedKeys = true, keyProperty = "fileId")
     Integer insert(File file);
 
-    @Delete("DELETE FROM FILES WHERE fileId = #{fileId}")
-    Integer deleteFile(Integer fileId);
+    @Delete("DELETE FROM FILES WHERE fileId = #{fileId} AND userid = #{userid}")
+    Integer deleteFile(Integer fileId, Integer userid);
 }

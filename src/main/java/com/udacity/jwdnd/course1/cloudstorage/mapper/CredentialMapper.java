@@ -21,9 +21,9 @@ public interface CredentialMapper {
     Integer insert(Credential credential);
 
     @Update("UPDATE CREDENTIALS SET url = #{url}, username = #{username}, key = #{key}, password = #{password}"
-            + " WHERE credentialid = #{credentialid}")
+            + " WHERE credentialid = #{credentialid} AND userid = #{userid}")
     Integer update(Credential credential);
 
-    @Delete("DELETE FROM CREDENTIALS WHERE credentialid = #{credentialid}")
-    Integer delete(Integer credentialid);
+    @Delete("DELETE FROM CREDENTIALS WHERE credentialid = #{credentialid} AND userid = #{userid}")
+    Integer delete(Integer credentialid, Integer userid);
 }

@@ -27,17 +27,17 @@ public class NoteController {
     }
     
     @PostMapping
-    public ModelAndView createOrEditNote(Authentication authentication, Model model, @ModelAttribute Note note) {
-        String currentUsername = authentication.getName();
-        User user = userService.getUser(currentUsername);
-        note.setUserid(user.getUserid());
+    public ModelAndView createOrEditNote(Authentication auth, Model model, @ModelAttribute Note note) {
+        Integer userid = userService.getCurrentUserId(auth);
+        note.setUserid(userid);
         noteService.createOrEditNote(note);
         return new ModelAndView("redirect:/home");
     }
 
     @DeleteMapping("/{noteid}")
-    public ModelAndView deleteFile(@PathVariable Integer noteid) {
-        noteService.deleteNote(noteid);
+    public ModelAndView deleteFile(Authentication auth, @PathVariable Integer noteid) {
+        Integer userid = userService.getCurrentUserId(auth);
+        noteService.deleteNote(noteid, userid);
         return new ModelAndView("redirect:/home");
     }
 }

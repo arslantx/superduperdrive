@@ -1,7 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
-import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.security.core.Authentication;
@@ -27,17 +26,17 @@ public class CredentialController {
     }
 
     @PostMapping
-    public ModelAndView createOrEditCredential(Authentication authentication, Model model, @ModelAttribute Credential credential) {
-        String currentUsername = authentication.getName();
-        User user = userService.getUser(currentUsername);
-        credential.setUserid(user.getUserid());
+    public ModelAndView createOrEditCredential(Authentication auth, Model model, @ModelAttribute Credential credential) {
+        Integer userid = userService.getCurrentUserId(auth);
+        credential.setUserid(userid);
         credentialService.createOrEditCredential(credential);
         return new ModelAndView("redirect:/home");
     }
 
     @DeleteMapping("/{credentialid}")
-    public ModelAndView deleteCredential(@PathVariable Integer credentialid) {
-        credentialService.deleteCredential(credentialid);
+    public ModelAndView deleteCredential(Authentication auth, @PathVariable Integer credentialid) {
+        Integer userid = userService.getCurrentUserId(auth);
+        credentialService.deleteCredential(credentialid, userid);
         return new ModelAndView("redirect:/home");
     }
 }

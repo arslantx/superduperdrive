@@ -19,12 +19,12 @@ public class FileService {
         this.fileMapper = fileMapper;
     }
 
-    public void deleteFile(Integer fileId) {
-        fileMapper.deleteFile(fileId);
+    public void deleteFile(Integer fileId, Integer userid) {
+        fileMapper.deleteFile(fileId, userid);
     }
 
-    public File getFile(Integer fileId) {
-        return fileMapper.getFile(fileId);
+    public File getFile(Integer fileId, Integer userid) {
+        return fileMapper.getFile(fileId, userid);
     }
 
     public List<File> getFileNames(Integer userid) {

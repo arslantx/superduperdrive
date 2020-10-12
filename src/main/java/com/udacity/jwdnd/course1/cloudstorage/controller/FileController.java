@@ -1,9 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import java.io.ByteArrayInputStream;
-import javax.servlet.http.HttpServletResponse;
 import com.udacity.jwdnd.course1.cloudstorage.model.File;
-import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.core.io.InputStreamResource;
@@ -35,8 +33,9 @@ public class FileController {
     }
 
     @GetMapping("/{fileId}")
-    public ResponseEntity<Resource> getFile(@PathVariable Integer fileId) {
-        File file = fileService.getFile(fileId);
+    public ResponseEntity<Resource> getFile(@PathVariable Integer fileId, Authentication auth) {
+        Integer userid = userService.getCurrentUserId(auth);
+        File file = fileService.getFile(fileId, userid);
         InputStreamResource resource =
                 new InputStreamResource(new ByteArrayInputStream(file.getFiledata()));
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(file.getContenttype()))
@@ -46,21 +45,16 @@ public class FileController {
     }
     
     @PostMapping
-    public ModelAndView uploadFile(Authentication authentication, @RequestParam("fileUpload") MultipartFile file) {
-        Integer currentUserid = getCurrentUserId(authentication);
-        fileService.storeFile(file, currentUserid);
+    public ModelAndView uploadFile(Authentication auth, @RequestParam("fileUpload") MultipartFile file) {
+        Integer userid = userService.getCurrentUserId(auth);
+        fileService.storeFile(file, userid);
         return new ModelAndView("redirect:/home");
     }
 
     @DeleteMapping("/{fileId}")
-    public ModelAndView deleteFile(@PathVariable Integer fileId) {
-        fileService.deleteFile(fileId);
+    public ModelAndView deleteFile(Authentication auth, @PathVariable Integer fileId) {
+        Integer userid = userService.getCurrentUserId(auth);
+        fileService.deleteFile(fileId, userid);
         return new ModelAndView("redirect:/home");
-    }
-
-    private Integer getCurrentUserId(Authentication authentication) {
-        String username = authentication.getName();
-        User user = userService.getUser(username);
-        return user.getUserid();
     }
 }
