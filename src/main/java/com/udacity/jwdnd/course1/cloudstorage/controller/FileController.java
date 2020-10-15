@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/file")
@@ -45,16 +45,35 @@ public class FileController {
     }
     
     @PostMapping
-    public ModelAndView uploadFile(Authentication auth, @RequestParam("fileUpload") MultipartFile file) {
+    public String uploadFile(Authentication auth, @RequestParam("fileUpload") MultipartFile file, Model model) {
         Integer userid = userService.getCurrentUserId(auth);
-        fileService.storeFile(file, userid);
-        return new ModelAndView("redirect:/home");
+        try {
+            if (fileService.isExistingFile(file, userid)) {
+                model.addAttribute("hasSpecificError", true);
+                model.addAttribute("errorMsg", "File with same name already exists. File not uploaded.");
+            } else {
+                fileService.storeFile(file, userid);
+                model.addAttribute("isChangeSuccess", true);
+            }
+        } catch (Exception e) {
+            model.addAttribute("hasGenericError", true);
+            e.printStackTrace();
+        }
+        model.addAttribute("redirectTab", "");
+        return "result";
     }
 
     @DeleteMapping("/{fileId}")
-    public ModelAndView deleteFile(Authentication auth, @PathVariable Integer fileId) {
+    public String deleteFile(Authentication auth, @PathVariable Integer fileId, Model model) {
         Integer userid = userService.getCurrentUserId(auth);
-        fileService.deleteFile(fileId, userid);
-        return new ModelAndView("redirect:/home");
+        try {
+            fileService.deleteFile(fileId, userid);
+            model.addAttribute("isChangeSuccess", true);
+        } catch (Exception e) {
+            model.addAttribute("hasGenericError", true);
+            e.printStackTrace();
+        }
+        model.addAttribute("redirectTab", "");
+        return "result";
     }
 }

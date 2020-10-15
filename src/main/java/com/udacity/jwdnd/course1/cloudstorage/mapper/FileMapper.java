@@ -24,6 +24,9 @@ public interface FileMapper {
     @Options(useGeneratedKeys = true, keyProperty = "fileId")
     Integer insert(File file);
 
+    @Select("SELECT EXISTS(SELECT 1 FROM FILES WHERE filename = #{filename} AND userid = #{userid})")
+    boolean isExistingFile(String filename, Integer userid);
+
     @Delete("DELETE FROM FILES WHERE fileId = #{fileId} AND userid = #{userid}")
     Integer deleteFile(Integer fileId, Integer userid);
 }
