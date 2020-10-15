@@ -44,6 +44,7 @@ public class SignupController {
         } else {
             model.addAttribute("signupError", signupError);
         }
+        model.addAttribute("user",new User());
         return "signup";
     }
 }
