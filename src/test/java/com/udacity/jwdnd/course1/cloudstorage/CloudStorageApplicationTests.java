@@ -42,6 +42,9 @@ class CloudStorageApplicationTests {
     private LoginPage loginPage;
     private SignupPage signupPage;
     private HomePage homePage;
+
+    private static final String TEST_UPLOAD_FILE_NAME = "test_upload_file.txt";
+    private static final String TEST_UPLOAD_FILE_PATH = "\\src\\test\\java\\com\\udacity\\jwdnd\\course1\\cloudstorage\\resources\\data";
     
 	@BeforeAll
 	static void beforeAll() throws HttpResponseException {
@@ -121,7 +124,7 @@ class CloudStorageApplicationTests {
         homePage.switchToNotesTab();
         homePage.deleteFirstNote();
         homePage.switchToNotesTab();
-        Assertions.assertEquals(0, homePage.getNumberOfNotes());
+        Assertions.assertEquals(0, homePage.getNoteCount());
     }
 
     @Test
@@ -164,9 +167,19 @@ class CloudStorageApplicationTests {
         loginAsUserWithExistingCreds();
         homePage.switchToCredentialsTab();
         homePage.deleteFirstCred();
-        Assertions.assertEquals(0, homePage.getNumberOfCredentials());
+        Assertions.assertEquals(0, homePage.getCredentialCount());
     }
-    
+
+    @Test
+    public void testFileUpload() {
+        loginAsTestUser();
+        String currentDir = System.getProperty("user.dir");
+        String testFilePath = currentDir + TEST_UPLOAD_FILE_PATH + "\\" + TEST_UPLOAD_FILE_NAME;
+        homePage.uploadFile(testFilePath);
+        Assertions.assertEquals(1, homePage.getFileCount());
+        Assertions.assertEquals(TEST_UPLOAD_FILE_NAME, homePage.getFirstFileName());
+    }
+
     
     // HELPER METHODS ONLY BEYOND THIS LINE
 

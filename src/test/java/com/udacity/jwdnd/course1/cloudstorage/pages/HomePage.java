@@ -10,6 +10,11 @@ public class HomePage extends BasePage {
     private By tabNavCredentials = By.id("nav-credentials-tab");
     private By buttonLogout = By.xpath("//button[.='Logout']");
 
+    // files tab
+    private By inputFileUpload = By.id("fileUpload");
+    private By buttonFileUpload = By.id("fileUploadButton");
+    private By fileNames = By.cssSelector("[data-id='fileNames']");
+
     // notes tab
     private By buttonAddNewNote = By.id("buttonAddNewNote");
     private By noteTitles = By.cssSelector("#notesTable tbody tr th");
@@ -63,6 +68,23 @@ public class HomePage extends BasePage {
         waitForPageToLoad();
     }
 
+    // FILE UPLOAD METHODS
+
+    public void uploadFile(String filePath) {
+        enterText(inputFileUpload, filePath);
+        click(buttonFileUpload);
+        wait(1);
+        clickChangeSuccessLink();
+    }
+
+    public int getFileCount() {
+        return getElementCount(fileNames);
+    }
+
+    public String getFirstFileName() {
+        return getText(fileNames);
+    }
+
     // NOTES METHODS
     
     public void addNote(String title, String description) {
@@ -96,7 +118,7 @@ public class HomePage extends BasePage {
         return getText(noteDescriptions);
     }
 
-    public int getNumberOfNotes() {
+    public int getNoteCount() {
         return getElementCount(noteTitles);
     }
 
@@ -154,7 +176,7 @@ public class HomePage extends BasePage {
         return getText(credPasswords);
     }
 
-    public int getNumberOfCredentials() {
+    public int getCredentialCount() {
         return getElementCount(credUrls);
     }
 

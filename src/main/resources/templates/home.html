@@ -35,7 +35,7 @@
                                         <input type="file" class="form-control-file" id="fileUpload" name="fileUpload" required>
                                     </div>
                                     <div class="col-sm-4">
-                                        <button type="submit" class="btn btn-dark">Upload</button>
+                                        <button id="fileUploadButton" type="submit" class="btn btn-dark">Upload</button>
                                     </div>
                                 </div>
                             </div>
@@ -56,7 +56,7 @@
                                             <button class="btn btn-danger" style="display: inline-block;" type="submit" btn-outline-secondary>Delete</button>
                                         </form>
                                     </td>
-                                    <th th:text="${file.filename}" scope="row">ExampleFile.txt</th>
+                                    <th data-id="fileNames" th:text="${file.filename}" scope="row">ExampleFile.txt</th>
                                 </tr>
                                 </tbody>
                             </table>
