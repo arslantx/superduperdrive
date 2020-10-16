@@ -27,7 +27,7 @@ public class CredentialService {
     public void createOrEditCredential(Credential credential) {
         String encodedKey = EncoderUtil.getRandomEncodedStr();
         credential.setKey(encodedKey);
-        String encryptedPwd = encryptionService.encryptValue(credential.getPassword(), encodedKey);
+        String encryptedPwd = encryptionService.encryptValue(credential.getDecryptedPassword(), encodedKey);
         credential.setPassword(encryptedPwd);
         // credentialid is null for new credentials
         if (credential.getCredentialid() == null) {
@@ -46,7 +46,7 @@ public class CredentialService {
             String key = credential.getKey();
             String encryptedPwd = credential.getPassword();
             String decryptedPwd = encryptionService.decryptValue(encryptedPwd, key);
-            credential.setPassword(decryptedPwd);
+            credential.setDecryptedPassword(decryptedPwd);
         }
     }
 }
