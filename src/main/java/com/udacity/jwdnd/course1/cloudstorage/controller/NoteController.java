@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/note")
@@ -27,17 +26,31 @@ public class NoteController {
     }
     
     @PostMapping
-    public ModelAndView createOrEditNote(Authentication auth, Model model, @ModelAttribute Note note) {
+    public String createOrEditNote(Authentication auth, Model model, @ModelAttribute Note note) {
         Integer userid = userService.getCurrentUserId(auth);
         note.setUserid(userid);
-        noteService.createOrEditNote(note);
-        return new ModelAndView("redirect:/home");
+        try {
+            noteService.createOrEditNote(note);
+            model.addAttribute("isChangeSuccess", true);
+        } catch (Exception e) {
+            model.addAttribute("hasGenericError", true);
+            e.printStackTrace();
+        }
+        model.addAttribute("redirectTab", "nav-notes-tab");
+        return "result";
     }
 
     @DeleteMapping("/{noteid}")
-    public ModelAndView deleteFile(Authentication auth, @PathVariable Integer noteid) {
+    public String deleteFile(Authentication auth, @PathVariable Integer noteid, Model model) {
         Integer userid = userService.getCurrentUserId(auth);
-        noteService.deleteNote(noteid, userid);
-        return new ModelAndView("redirect:/home");
+        try {
+            noteService.deleteNote(noteid, userid);
+            model.addAttribute("isChangeSuccess", true);
+        } catch (Exception e) {
+            model.addAttribute("hasGenericError", true);
+            e.printStackTrace();
+        }
+        model.addAttribute("redirectTab", "nav-notes-tab");
+        return "result";
     }
 }

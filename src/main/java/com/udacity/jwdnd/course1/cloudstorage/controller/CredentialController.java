@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/credential")
@@ -26,17 +25,31 @@ public class CredentialController {
     }
 
     @PostMapping
-    public ModelAndView createOrEditCredential(Authentication auth, Model model, @ModelAttribute Credential credential) {
+    public String createOrEditCredential(Authentication auth, Model model, @ModelAttribute Credential credential) {
         Integer userid = userService.getCurrentUserId(auth);
         credential.setUserid(userid);
-        credentialService.createOrEditCredential(credential);
-        return new ModelAndView("redirect:/home");
+        try {
+            credentialService.createOrEditCredential(credential);
+            model.addAttribute("isChangeSuccess", true);
+        } catch (Exception e) {
+            model.addAttribute("hasGenericError", true);
+            e.printStackTrace();
+        }
+        model.addAttribute("redirectTab", "nav-credentials-tab");
+        return "result";
     }
 
     @DeleteMapping("/{credentialid}")
-    public ModelAndView deleteCredential(Authentication auth, @PathVariable Integer credentialid) {
+    public String deleteCredential(Authentication auth, @PathVariable Integer credentialid, Model model) {
         Integer userid = userService.getCurrentUserId(auth);
-        credentialService.deleteCredential(credentialid, userid);
-        return new ModelAndView("redirect:/home");
+        try {
+            credentialService.deleteCredential(credentialid, userid);
+            model.addAttribute("isChangeSuccess", true);
+        } catch (Exception e) {
+            model.addAttribute("hasGenericError", true);
+            e.printStackTrace();
+        }
+        model.addAttribute("redirectTab", "nav-credentials-tab");
+        return "result";
     }
 }
