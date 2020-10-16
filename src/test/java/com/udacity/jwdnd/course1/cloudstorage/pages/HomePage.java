@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.pages;
 
+import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -8,7 +9,6 @@ public class HomePage extends BasePage {
     private By tabNavNotes = By.id("nav-notes-tab");
     private By tabNavCredentials = By.id("nav-credentials-tab");
     private By buttonLogout = By.xpath("//button[.='Logout']");
-    private By buttonFileUpload = By.xpath("//button[.='Upload']");
 
     // notes tab
     private By buttonAddNewNote = By.id("buttonAddNewNote");
@@ -38,6 +38,9 @@ public class HomePage extends BasePage {
     private By inputCredPwd = By.id("credential-password");
     private By buttonCredSaveChanges = By.id("credModalSaveChanges");
 
+    // notifications
+    private By linkChangeSuccess = By.cssSelector("[data-id='changeSuccessLink']");
+
     public HomePage(WebDriver driver) {
         super.driver = driver;
     }
@@ -45,7 +48,6 @@ public class HomePage extends BasePage {
     @Override
     public void waitForPageToLoad() {
         wait(1);
-        waitForVisibility(buttonFileUpload);
         waitForClickability(buttonLogout);
         waitForClickability(tabNavNotes);
     }
@@ -54,23 +56,36 @@ public class HomePage extends BasePage {
         click(buttonLogout);
     }
 
+    public void clickChangeSuccessLink() {
+        waitForVisibility(linkChangeSuccess);
+        click(linkChangeSuccess);
+        wait(1);
+        waitForPageToLoad();
+    }
+
     // NOTES METHODS
     
     public void addNote(String title, String description) {
         switchToNotesTab();
         click(buttonAddNewNote);
         submitNoteModal(title, description);
+        clickChangeSuccessLink();
+        waitForClickability(buttonAddNewNote);
     }
     
     public void deleteFirstNote() {
         click(buttonNoteDelete);
         waitForDisappear(buttonAddNewNote);
         wait(1);
+        clickChangeSuccessLink();
+        waitForClickability(buttonAddNewNote);
     }
 
     public void editFirstNote(String title, String description) {
         click(buttonNoteEdit);
         submitNoteModal(title, description);
+        clickChangeSuccessLink();
+        waitForClickability(buttonAddNewNote);
     }
 
     public String getFirstNoteTitle() {
@@ -92,6 +107,7 @@ public class HomePage extends BasePage {
         click(buttonNoteSaveChanges);
         waitForDisappear(buttonAddNewNote);
         wait(1);
+        waitForVisibility(linkChangeSuccess);
     }
 
     public void switchToNotesTab() {
@@ -106,17 +122,24 @@ public class HomePage extends BasePage {
         switchToCredentialsTab();
         click(buttonAddNewCred);
         submitCredModal(url, username, password);
+        clickChangeSuccessLink();
+        waitForClickability(buttonAddNewCred);
     }
 
     public void deleteFirstCred() {
         click(buttonDeleteCred);
         waitForDisappear(buttonAddNewCred);
         wait(1);
+        waitForVisibility(linkChangeSuccess);
+        clickChangeSuccessLink();
+        waitForClickability(buttonAddNewCred);
     }
 
     public void editFirstCred(String url, String username, String password) {
         click(buttonEditCred);
         submitCredModal(url, username, password);
+        clickChangeSuccessLink();
+        waitForClickability(buttonAddNewCred);
     }
 
     public String getFirstCredUrl() {
@@ -142,10 +165,24 @@ public class HomePage extends BasePage {
         enterText(inputCredPwd, password);
         click(buttonCredSaveChanges);
         wait(1);
+        waitForVisibility(linkChangeSuccess);
     }
 
     public void switchToCredentialsTab() {
         click((tabNavCredentials));
         waitForClickability(buttonAddNewCred);
+    }
+
+    public void openFirstCredentialEditModal() {
+        click(buttonEditCred);
+        waitForVisibility(headerCredModal);
+    }
+
+    public Credential getCredentialFromModal() {
+        Credential credential = new Credential();
+        credential.setUrl(getValue(inputCredUrl));
+        credential.setUsername(getValue(inputCredUser));
+        credential.setDecryptedPassword(getValue(inputCredPwd));
+        return credential;
     }
 }

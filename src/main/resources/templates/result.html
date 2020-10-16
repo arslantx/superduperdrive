@@ -12,16 +12,16 @@
         <div class="container justify-content-center w-50 p-3" style="margin-top: 5em;">
             <div th:if="${isChangeSuccess}" class="alert alert-success fill-parent">
                 <h1 class="display-5">Success</h1>
-                <span>Your changes were successfully saved. Click <a th:href="@{'/home#' + ${redirectTab}}">here</a> to continue.</span>
+                <span>Your changes were successfully saved. Click <a data-id="changeSuccessLink" th:href="@{'/home#' + ${redirectTab}}">here</a> to continue.</span>
             </div>
             <div th:if="${hasGenericError}" class="alert alert-danger fill-parent">
                 <h1 class="display-5">Error</h1>
-                <span>Your changes were not saved. Click <a th:href="@{'/home#' + ${redirectTab}}">here</a> to continue.</span>
+                <span>Your changes were not saved. Click <a data-id="changeErrorLink" th:href="@{'/home#' + ${redirectTab}}">here</a> to continue.</span>
             </div>
             <div th:if="${hasSpecificError}" class="alert alert-danger fill-parent">
                 <h1 class="display-5">Error</h1>
                 <span th:text="${errorMsg}">Example Error Message</span>
-                <span>Click <a th:href="@{'/home#' + ${redirectTab}}">here</a> to continue.</span>
+                <span>Click <a data-id="changeErrorLink" th:href="@{'/home#' + ${redirectTab}}">here</a> to continue.</span>
             </div>
         </div>
     </body>

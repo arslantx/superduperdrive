@@ -100,7 +100,6 @@ class CloudStorageApplicationTests {
         String noteTitle = "Test Note 1";
         String noteDesc = "Note 1 desc";
         homePage.addNote(noteTitle, noteDesc);
-        homePage.switchToNotesTab();
         Assertions.assertEquals(noteTitle, homePage.getFirstNoteTitle());
         Assertions.assertEquals(noteDesc, homePage.getFirstNoteDescription());
     }
@@ -112,7 +111,6 @@ class CloudStorageApplicationTests {
         String noteTitle = homePage.getFirstNoteTitle() + " updated";
         String noteDesc = homePage.getFirstNoteDescription() + " updated";
         homePage.editFirstNote(noteTitle, noteDesc);
-        homePage.switchToNotesTab();
         Assertions.assertEquals(noteTitle, homePage.getFirstNoteTitle());
         Assertions.assertEquals(noteDesc, homePage.getFirstNoteDescription());
     }
@@ -133,10 +131,14 @@ class CloudStorageApplicationTests {
         String credUser = "testUser1";
         String credPwd = "testPwd1";
         homePage.addCredential(credUrl, credUser, credPwd);
-        homePage.switchToCredentialsTab();
         Assertions.assertEquals(credUrl, homePage.getFirstCredUrl());
         Assertions.assertEquals(credUser, homePage.getFirstCredUsername());
-        Assertions.assertEquals(credPwd, homePage.getFirstCredPassword());
+        Assertions.assertNotEquals(credPwd, homePage.getFirstCredPassword());
+        homePage.openFirstCredentialEditModal();
+        Credential credFromModal = homePage.getCredentialFromModal();
+        Assertions.assertEquals(credUrl, credFromModal.getUrl());
+        Assertions.assertEquals(credUser, credFromModal.getUsername());
+        Assertions.assertEquals(credPwd, credFromModal.getDecryptedPassword());
     }
 
     @Test
@@ -147,10 +149,14 @@ class CloudStorageApplicationTests {
         String credUser = homePage.getFirstCredUsername() + "new";
         String credPwd = homePage.getFirstCredPassword() + "new";
         homePage.editFirstCred(credUrl, credUser, credPwd);
-        homePage.switchToCredentialsTab();
         Assertions.assertEquals(credUrl, homePage.getFirstCredUrl());
         Assertions.assertEquals(credUser, homePage.getFirstCredUsername());
-        Assertions.assertEquals(credPwd, homePage.getFirstCredPassword());
+        Assertions.assertNotEquals(credPwd, homePage.getFirstCredPassword());
+        homePage.openFirstCredentialEditModal();
+        Credential credFromModal = homePage.getCredentialFromModal();
+        Assertions.assertEquals(credUrl, credFromModal.getUrl());
+        Assertions.assertEquals(credUser, credFromModal.getUsername());
+        Assertions.assertEquals(credPwd, credFromModal.getDecryptedPassword());
     }
 
     @Test
@@ -158,7 +164,6 @@ class CloudStorageApplicationTests {
         loginAsUserWithExistingCreds();
         homePage.switchToCredentialsTab();
         homePage.deleteFirstCred();
-        homePage.switchToCredentialsTab();
         Assertions.assertEquals(0, homePage.getNumberOfCredentials());
     }
     
@@ -205,7 +210,7 @@ class CloudStorageApplicationTests {
         Credential cred = new Credential();
         cred.setUrl("http://www.google.com");
         cred.setUsername("testUser1");
-        cred.setPassword("testPass1");
+        cred.setDecryptedPassword("testPass1");
         cred.setUserid(user.getUserid());
         credentialService.createOrEditCredential(cred);
         // re-set password since service encrypts it

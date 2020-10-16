@@ -36,6 +36,10 @@ public abstract class BasePage {
     protected String getText(By locator) {
         return driver.findElement(locator).getText();
     }
+
+    protected String getValue(By locator) {
+        return driver.findElement(locator).getAttribute("value");
+    }
     
     private WebDriverWait getWebDriverWaitObject() {
         return new WebDriverWait(driver, DEFAULT_WAIT_IN_SECONDS);
